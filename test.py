@@ -78,8 +78,10 @@ def entrainement_extraction(data_X,word2int):
     return x_train,y_train
 
 
-
 x_ = data_helper.load_data_phrase('data/train1.csv.zip')
+x_ = [x_[i] for i in range(200)]
+
+
 word2int,int2word,vocab_size = dictionnaire_extration(x_)
 print(vocab_size)
 x_train,y_train = entrainement_extraction(x_,word2int)
@@ -128,7 +130,6 @@ n_iter = 10000
 
 
 # on commence l'entrainement :
-
 for _ in range(n_iter):
     sess.run(train_step,{x : x_train,y_label : y_train})
     print('loss : ',sess.run(cross_entropy_loss,{x : x_train,y_label : y_train}))
