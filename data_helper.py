@@ -107,6 +107,30 @@ def load_data(filename):
 	y = np.array(y_raw)
 	return x, y, vocabulary, vocabulary_inv, df, labels
 
+
+
+# retourner le dataset qu on a sous forme d'une liste de phrase
+def load_data_phrase(filename):
+	df = pd.read_csv(filename, compression='zip', encoding='utf-8')
+	selected = ['Category', 'Descript']
+	non_selected = list(set(df.columns) - set(selected))
+
+	df = df.drop(non_selected, axis=1)
+	df = df.dropna(axis=0, how='any', subset=selected)
+	df = df.reindex(np.random.permutation(df.index))
+
+	labels = sorted(list(set(df[selected[0]].tolist())))
+	num_labels = len(labels)
+	one_hot = np.zeros((num_labels, num_labels), int)
+	np.fill_diagonal(one_hot, 1)
+	label_dict = dict(zip(labels, one_hot))
+
+	x_raw= df[selected[1]].apply(lambda x: clean_str(x)).tolist()
+	y_raw = df[selected[0]].apply(lambda y: label_dict[y]).tolist()
+
+
+	return x_raw
+
 if __name__ == "__main__":
 	train_file = './data/train.csv.zip'
 	load_data(train_file)
